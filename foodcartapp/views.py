@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.templatetags.static import static
 import json
 from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 
 from .models import Product, FoodOrderProduct, FoodOrder
 
@@ -60,25 +62,39 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    print(request.data)
-    #order = json.loads(request.data.decode())
+    #print(request.data)
     order = request.data
-    products_order = order['products']
-    # print(products_order)
-    order = FoodOrder.objects.create(
-        firstname=order['firstname'],
-        lastname=order['lastname'],
-        phone_number=order['phonenumber'],
-        address=order['address']
-    )
+    try:
+        products_order = order['products']
+        if products_order == []:
+            content = {'products: Этот список не может быть пустым.'}
+            return Response(content, status.HTTP_406_NOT_ACCEPTABLE)
+        # print(products_order)
+        order = FoodOrder.objects.create(
+            firstname=order['firstname'],
+            lastname=order['lastname'],
+            phone_number=order['phonenumber'],
+            address=order['address']
+        )
 
-    FoodOrderProduct.objects.bulk_create(
-        [
-            FoodOrderProduct(order=order,
-                             product=Product.objects.get(
-                                 id=int(product['product'])),
-                             quantity=int(product['quantity']),)
-            for product in products_order
-        ]
-    )
+        FoodOrderProduct.objects.bulk_create(
+            [
+                FoodOrderProduct(order=order,
+                                 product=Product.objects.get(
+                                     id=int(product['product'])),
+                                 quantity=int(product['quantity']),)
+                for product in products_order
+            ]
+        )
+    except TypeError:
+        if type(products_order) == str:
+            content = {'products: Ожидался list со значениями, но был получен "str".'}
+            return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
+        elif not products_order:
+            content = {'products: Это поле не может быть пустым.'}
+            return Response(content, status.HTTP_406_NOT_ACCEPTABLE)
+
+    except KeyError:
+        content = {'products: Обязательное поле.'}
+        return Response(content, status.HTTP_406_NOT_ACCEPTABLE)
     return JsonResponse({})
