@@ -129,7 +129,7 @@ class RestaurantMenuItem(models.Model):
 class FoodOrder(models.Model):
     firstname = models.CharField('Имя', max_length=50)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
-    phone_number = PhoneNumberField('Номер телефона', db_index=True)
+    phonenumber = PhoneNumberField('Номер телефона', db_index=True)
     address = models.TextField('Адресс')
 
     class Meta:

@@ -1,11 +1,11 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
-import json
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 
 from .models import Product, FoodOrderProduct, FoodOrder
+from foodcartapp.serializers import ProductSerialiser
 
 
 def banners_list_api(request):
@@ -62,7 +62,8 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    all_products = Product.objects.all()
+    serializer = ProductSerialiser(data=request.data)
+    serializer.is_valid(raise_exception=True)
     order = request.data
     try:
         products_order = order['products']
@@ -100,7 +101,7 @@ def register_order(request):
         create_order = FoodOrder.objects.create(
             firstname=order['firstname'],
             lastname=order['lastname'],
-            phone_number=order['phonenumber'],
+            phonenumber=order['phonenumber'],
             address=order['address']
         )
 
