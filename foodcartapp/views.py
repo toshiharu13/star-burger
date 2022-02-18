@@ -64,22 +64,21 @@ def product_list_api(request):
 def register_order(request):
     serializer = ProductSerialiser(data=request.data)
     serializer.is_valid(raise_exception=True)
-    order = request.data
-    products_order = order['products']
+    products_order = serializer.validated_data['products']
+    print(serializer.validated_data['products'])
 
     create_order = FoodOrder.objects.create(
-        firstname=order['firstname'],
-        lastname=order['lastname'],
-        phonenumber=order['phonenumber'],
-        address=order['address']
+        firstname=serializer.validated_data['firstname'],
+        lastname=serializer.validated_data['lastname'],
+        phonenumber=serializer.validated_data['phonenumber'],
+        address=serializer.validated_data['address']
     )
 
     FoodOrderProduct.objects.bulk_create(
         [
             FoodOrderProduct(order=create_order,
-                             product=Product.objects.get(
-                                 id=int(product['product'])),
-                             quantity=int(product['quantity']), )
+                             product=product['product'],
+                             quantity=(product['quantity']), )
             for product in products_order
         ]
     )
