@@ -12,7 +12,7 @@ class OrderSerialisator(ModelSerializer):
 
 
 class ProductSerialiser(ModelSerializer):
-    products = OrderSerialisator(many=True, allow_empty=False)
+    products = OrderSerialisator(many=True, allow_empty=False, write_only=True)
 
     class Meta:
         model = FoodOrder

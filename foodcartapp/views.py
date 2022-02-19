@@ -83,4 +83,4 @@ def register_order(request):
         ]
     )
 
-    return JsonResponse({})
+    return Response(serializer.data, status=201)
