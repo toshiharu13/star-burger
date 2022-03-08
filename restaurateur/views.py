@@ -102,4 +102,6 @@ def view_orders(request):
     context = {
         'order_items': order_detail
     }
+    for order in order_detail:
+        print(order.orders_products.all())
     return render(request, template_name='order_items.html', context=context)

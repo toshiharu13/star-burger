@@ -3,6 +3,11 @@ from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class PostQuerySet(models.QuerySet):
+    def get_account(self):
+        account = self.annotate()
+
+
 class Restaurant(models.Model):
     name = models.CharField(
         'название',
