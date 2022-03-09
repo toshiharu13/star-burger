@@ -3,6 +3,9 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
+from _collections import defaultdict
+from django.shortcuts import get_object_or_404
+from django.db.models import F, Sum
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
@@ -98,10 +101,11 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    order_detail = FoodOrder.objects.all().prefetch_related('orders_products')
+    order_details = FoodOrder.objects.all().prefetch_related('orders_products').get_orders_sums()
     context = {
-        'order_items': order_detail
+        'order_items': order_details,
     }
-    for order in order_detail:
-        print(order.orders_products.all())
+
+    for i in order_details:
+        print(i.order_summ)
     return render(request, template_name='order_items.html', context=context)

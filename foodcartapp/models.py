@@ -1,11 +1,18 @@
+from collections import defaultdict
+
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.db.models import Sum, F
+from django.shortcuts import get_object_or_404
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-class PostQuerySet(models.QuerySet):
-    def get_account(self):
-        account = self.annotate()
+class FoodOrderQuerySet(models.QuerySet):
+    def get_orders_sums(self):
+        order_summ = self.annotate(order_summ=Sum(
+            F('orders_products__product__price') *
+            F('orders_products__quantity')))
+        return order_summ
 
 
 class Restaurant(models.Model):
@@ -136,6 +143,7 @@ class FoodOrder(models.Model):
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
     address = models.TextField('Адресс')
+    objects = FoodOrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Заказ'
