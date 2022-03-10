@@ -114,3 +114,10 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(FoodOrder)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [FoodOrderProductInline,]
+
+
+@admin.register(FoodOrderProduct)
+class FoodOrderProductAdmin(admin.ModelAdmin):
+   list_display = ['product', 'quantity', 'price', 'order']
+   list_filter = ['order', 'product']
+   raw_id_fields = ['product', 'order']

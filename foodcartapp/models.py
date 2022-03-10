@@ -10,7 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class FoodOrderQuerySet(models.QuerySet):
     def get_orders_sums(self):
         order_summ = self.annotate(order_summ=Sum(
-            F('orders_products__product__price') *
+            F('orders_products__price') *
             F('orders_products__quantity')))
         return order_summ
 
@@ -150,7 +150,7 @@ class FoodOrder(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'{self.firstname} {self.lastname} - {self.address}'
+        return f'{self.pk}-{self.firstname} {self.lastname} - {self.address}'
 
 
 class FoodOrderProduct(models.Model):
@@ -163,10 +163,19 @@ class FoodOrderProduct(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='products',
                                 verbose_name='Продукты заказа')
-    quantity = models.PositiveIntegerField('количество', validators=[MinValueValidator(1)])
+    quantity = models.PositiveIntegerField(
+        'количество',
+        validators=[MinValueValidator(1)])
+    price = models.DecimalField(
+        'цена',
+        max_digits=8,
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
+    )
 
     class Meta:
         verbose_name = 'Элементы заказа'
+        verbose_name_plural = 'Элементы заказа'
 
     def __str__(self):
         return f'Из заказа {self.order.pk} - {self.product.name} '
