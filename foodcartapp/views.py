@@ -80,7 +80,9 @@ def register_order(request):
         [
             FoodOrderProduct(order=create_order,
                              product=product['product'],
-                             quantity=(product['quantity']), price=Product.objects.get(name=product['product']).price)
+                             quantity=(product['quantity']),
+                             price=Product.objects.get(
+                                 name=product['product']).price)
             for product in products_order
         ]
     )
