@@ -3,6 +3,8 @@ from django.templatetags.static import static
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
+from django.db import transaction
+
 
 from .models import Product, FoodOrderProduct, FoodOrder
 from foodcartapp.serializers import ProductSerialiser
@@ -59,7 +61,7 @@ def product_list_api(request):
         'indent': 4,
     })
 
-
+@transaction.atomic
 @api_view(['POST'])
 def register_order(request):
     serializer = ProductSerialiser(data=request.data)
@@ -78,7 +80,7 @@ def register_order(request):
         [
             FoodOrderProduct(order=create_order,
                              product=product['product'],
-                             quantity=(product['quantity']), )
+                             quantity=(product['quantity']), price=Product.objects.get(name=product['product']).price)
             for product in products_order
         ]
     )
