@@ -149,6 +149,7 @@ class FoodOrder(models.Model):
         ('FINISHED', 'Закончен'),
     ]
     order_status = models.CharField(
+        'Статус заказа',
         max_length=10,
         choices=ORDER_STATUS,
         default='NEW',
@@ -157,9 +158,21 @@ class FoodOrder(models.Model):
     creation_date = models.DateTimeField(
         'Время создания заказа',
         default=timezone.now,
-        null=True)
+        null=True,
+        db_index=True)
     call_time = models.DateTimeField('Когда позвонить', null=True, blank=True)
-    delivery_time = models.DateTimeField('Когда доставить', null=True, blank=True)
+    delivery_time = models.DateTimeField(
+        'Когда доставить',
+        null=True,
+        blank=True)
+    PAYMENT_METHOD = [
+        ('CASH', 'Наличными'),
+        ('CARD', 'Картой'),]
+    payment_method = models.CharField(
+        'Способ оплаты',
+        max_length=10,
+        choices=PAYMENT_METHOD,
+        blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
