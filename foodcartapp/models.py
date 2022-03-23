@@ -136,14 +136,21 @@ class RestaurantMenuItem(models.Model):
         return f"{self.restaurant.name} - {self.product.name}"
 
 
-
-
 class FoodOrder(models.Model):
     firstname = models.CharField('Имя', max_length=50)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
     address = models.TextField('Адресс')
     objects = FoodOrderQuerySet.as_manager()
+    ORDER_STATUS = [
+        ('NEW', 'Новый'),
+        ('PROGRESS', 'В работе'),
+        ('FINISHED', 'Закончен'),
+    ]
+    order_status = models.CharField(
+        max_length=10,
+        choices=ORDER_STATUS,
+        default='NEW',)
 
     class Meta:
         verbose_name = 'Заказ'
