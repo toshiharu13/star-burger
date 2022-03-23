@@ -150,7 +150,9 @@ class FoodOrder(models.Model):
     order_status = models.CharField(
         max_length=10,
         choices=ORDER_STATUS,
-        default='NEW',)
+        default='NEW',
+        db_index=True)
+    comments = models.TextField('Комментарии', blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
