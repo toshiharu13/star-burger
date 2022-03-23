@@ -4,6 +4,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.db.models import Sum, F
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -153,6 +154,12 @@ class FoodOrder(models.Model):
         default='NEW',
         db_index=True)
     comments = models.TextField('Комментарии', blank=True)
+    creation_date = models.DateTimeField(
+        'Время создания заказа',
+        default=timezone.now,
+        null=True)
+    call_time = models.DateTimeField('Когда позвонить', null=True, blank=True)
+    delivery_time = models.DateTimeField('Когда доставить', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
