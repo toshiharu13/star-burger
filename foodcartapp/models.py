@@ -172,7 +172,14 @@ class FoodOrder(models.Model):
         'Способ оплаты',
         max_length=10,
         choices=PAYMENT_METHOD,
-        blank=True)
+        blank=True,
+        db_index=True)
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Ресторан, выполняющий заказ')
 
     class Meta:
         verbose_name = 'Заказ'
