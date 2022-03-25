@@ -16,6 +16,19 @@ class FoodOrderQuerySet(models.QuerySet):
         return order_summ
 
 
+class Coordinate(models.Model):
+    address = models.CharField(max_length=50, blank=True)
+    lon = models.FloatField('Долгота')
+    lat = models.FloatField('Широта')
+
+    class Meta:
+        verbose_name = 'Координаты'
+        verbose_name_plural = 'Координаты'
+
+    def __str__(self):
+        return f'{self.address} lon{self.lon}, lat{self.lat}'
+
+
 class Restaurant(models.Model):
     name = models.CharField(
         'название',
@@ -24,8 +37,12 @@ class Restaurant(models.Model):
     address = models.CharField(
         'адрес',
         max_length=100,
-        blank=True,
-    )
+        blank=True,)
+    coordinate = models.ForeignKey(
+        Coordinate,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Координаты')
     contact_phone = models.CharField(
         'контактный телефон',
         max_length=50,

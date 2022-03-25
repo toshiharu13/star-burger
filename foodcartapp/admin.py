@@ -8,7 +8,7 @@ from .models import Product
 from .models import ProductCategory
 from .models import Restaurant
 from .models import RestaurantMenuItem
-from .models import FoodOrder, FoodOrderProduct
+from .models import FoodOrder, FoodOrderProduct, Coordinate
 
 
 class RestaurantMenuItemInline(admin.TabularInline):
@@ -109,6 +109,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductCategory)
 class ProductAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Coordinate)
+class CoordinateAdmin(admin.ModelAdmin):
     pass
 
 

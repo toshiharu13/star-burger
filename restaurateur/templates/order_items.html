@@ -40,7 +40,7 @@
               <summary>Показать</summary>
               <ul>
                 {% for restaurant in item.recommended_restaurant.all %}
-                  <li>{{restaurant}}</li>
+                  <li>{{restaurant}} - {{ restaurant.coordinate }}</li>
                 {% endfor %}
               </ul>
             </details>
