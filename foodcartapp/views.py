@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 
 from .models import Product, FoodOrderProduct, FoodOrder, RestaurantMenuItem, Restaurant
@@ -89,29 +90,31 @@ def register_order(request):
 
     allrestaurantmenu = RestaurantMenuItem.objects.select_related('restaurant').select_related('product').all()
     all_restaurants = []
-    print(f'allrestaurantmenu - {allrestaurantmenu}')
+    suitable_restaurant = []
+    all_order_in_one = False
+
     for product in products_order:
         need_restaurants = allrestaurantmenu.filter(product__name=product['product'])
         one_burger_restaurants = []
         for need_restaurant in need_restaurants:
             one_burger_restaurants.append(need_restaurant.restaurant.name)
         all_restaurants.append(one_burger_restaurants)
-        #print(f'all_restaurants {all_restaurants}')
     print(all_restaurants)
-    all_order_in_one = False
+
     if all_restaurants:
         first_burger_restaurants = all_restaurants[0]
         for first_burger_restaurant in first_burger_restaurants:
-            if all_order_in_one: break
             for current_burger_restaurants in all_restaurants:
-                if first_burger_restaurant in current_burger_restaurants:
-                    all_order_in_one = True
-                else: continue
-            print(first_burger_restaurant)
-            if all_order_in_one:
-                restaurant_for_save = Restaurant.objects.get(name=first_burger_restaurant)
-                create_order.restaurant = restaurant_for_save
-                create_order.save()
+                if first_burger_restaurant not in current_burger_restaurants:
+                    continue
+            suitable_restaurant.append(first_burger_restaurant)
+        print(suitable_restaurant)
+
+        for restuarant in suitable_restaurant:
+            restuarant_object = get_object_or_404(Restaurant, name=restuarant)
+            create_order.recommended_restaurant.add(restuarant_object)
+        create_order.save()
+
 
 
 

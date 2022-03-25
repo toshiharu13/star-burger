@@ -174,12 +174,11 @@ class FoodOrder(models.Model):
         choices=PAYMENT_METHOD,
         blank=True,
         db_index=True)
-    restaurant = models.ForeignKey(
+    recommended_restaurant = models.ManyToManyField(
         Restaurant,
-        on_delete=models.SET_NULL,
-        null=True,
+        verbose_name='Рекомендованые рестораны',
         blank=True,
-        verbose_name='Ресторан, выполняющий заказ')
+        related_name='orders')
 
     class Meta:
         verbose_name = 'Заказ'

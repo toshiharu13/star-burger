@@ -105,7 +105,4 @@ def view_orders(request):
     context = {
         'order_items': order_details,
     }
-
-    for i in order_details:
-        print(i.order_summ)
     return render(request, template_name='order_items.html', context=context)
