@@ -28,24 +28,24 @@
     {% for item in order_items %}
       <tr>
         <td>{{item.id}}</td>
-        <td>{{item.get_order_status_display}}</td>
-        <td>{{item.get_payment_method_display}}</td>
+        <td>{{item.order_status}}</td>
+        <td>{{item.payment_method}}</td>
         <td>{{item.order_summ}}</td>
         <td>{{item.firstname}} {{item.lastname}}</td>
         <td>{{item.phonenumber}}</td>
         <td>{{item.address}}</td>
         <td><a href="{% url 'admin:foodcartapp_foodorder_change' item.id %}?next={{request.build_absolute_uri|urlencode}}">Редактировать</a></td>
-        <td> {% if item.recommended_restaurant %}
+        <td> {% if item.recommended_restaurants %}
             <details>
               <summary>Показать</summary>
               <ul>
-                {% for restaurant in item.recommended_restaurant.all %}
-                  <li>{{restaurant}} - {{ restaurant.coordinate }}</li>
+                {% for restaurant, distance in item.recommended_restaurants.items %}
+                  <li>{{restaurant}} - {{ distance }}</li>
                 {% endfor %}
               </ul>
             </details>
           {% else %}
-            Нет подходящих ресторанов
+            Не найдено подходящих ресторанов
           {% endif %}
         </td>
         <td>{{item.comments}}</td>

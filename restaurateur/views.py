@@ -6,13 +6,19 @@ from django.contrib.auth.decorators import user_passes_test
 from _collections import defaultdict
 from django.shortcuts import get_object_or_404
 from django.db.models import F, Sum
+from environs import Env
+from geopy import distance
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 from foodcartapp.models import FoodOrder
+from foodcartapp.utills import fetch_coordinates
 
 
 from foodcartapp.models import Product, Restaurant
+
+env = Env()
+env.read_env()
 
 
 class Login(forms.Form):
@@ -101,8 +107,45 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
+    order_context = []
     order_details = FoodOrder.objects.all().prefetch_related('orders_products').get_orders_sums()
-    context = {
-        'order_items': order_details,
-    }
+
+    for order in order_details:
+        way_to_customer = dict()
+        orders_coordinate = fetch_coordinates(env.str('YANDEX_KEY'),
+                                    order.address)
+        if orders_coordinate:
+            for restaurant in order.recommended_restaurant.all():
+                restaurant_coordinate = (restaurant.coordinate.lat, restaurant.coordinate.lon)
+                normal_orders_coordinate = (orders_coordinate[1], orders_coordinate[0])
+                customer_to_order_distance = distance.distance(restaurant_coordinate, normal_orders_coordinate).km
+                #print(customer_to_order_distance)
+                way_to_customer[restaurant.name] = customer_to_order_distance
+            sorted_way_to_customer_keys = sorted(way_to_customer, key=way_to_customer.get)
+            sorted_way_to_customer = {
+                key: way_to_customer[key] for key in sorted_way_to_customer_keys
+            }
+        else:
+            for restaurant in order.recommended_restaurant.all():
+                way_to_customer[restaurant.name] = 'не удалось расчитать расстояние'
+        order_context.append(
+            {
+                "id": order.id,
+                "order_status": order.get_order_status_display,
+                "order_summ": order.order_summ,
+                "firstname": order.firstname,
+                "lastname": order.lastname,
+                "phonenumber": order.phonenumber,
+                "address": order.address,
+                "comments": order.comments,
+                "payment_method": order.get_payment_method_display,
+                "recommended_restaurants": sorted_way_to_customer,
+
+            }
+        )
+
+
+        context = {
+            'order_items': order_context,
+        }
     return render(request, template_name='order_items.html', context=context)
