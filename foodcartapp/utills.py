@@ -27,21 +27,21 @@ def fetch_coordinates(apikey, address):
     return lon, lat
 
 
+def get_object_coordinate(address):
+    coordinates = fetch_coordinates(env.str('YANDEX_KEY'), address)
+    if coordinates:
+        rest_lon, rest_lat = coordinates
+        restaurant_coordinate_oblect, created = Coordinate.objects.get_or_create(
+            address=address,
+            lon=rest_lon,
+            lat=rest_lat, )
+        return restaurant_coordinate_oblect
+
+
 if __name__ == '__main__':
+    ...
 
 
-    all_restaurants = Restaurant.objects.select_related('coordinate').all()
-    for restaurant in all_restaurants:
-        if not restaurant.coordinate:
-            rest_lon, rest_lat = fetch_coordinates(env.str('YANDEX_KEY'),
-                                    restaurant.address)
-            if not rest_lon and not rest_lat:
-                continue
-            restaurant_coordinate_oblect, created = Coordinate.objects.get_or_create(
-                address=restaurant.address,
-                lon=rest_lon,
-                lat=rest_lat,)
-            restaurant.coordinate = restaurant_coordinate_oblect
-            restaurant.save()
+
 
 

@@ -11,8 +11,8 @@ from geopy import distance
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from foodcartapp.models import FoodOrder
-from foodcartapp.utills import fetch_coordinates
+from foodcartapp.models import FoodOrder, Coordinate
+from foodcartapp.utills import get_object_coordinate
 
 
 from foodcartapp.models import Product, Restaurant
@@ -109,26 +109,49 @@ def view_restaurants(request):
 def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related('orders_products').get_orders_sums()
+    all_coordinates = Coordinate.objects.all()
+    all_restaurants = Restaurant.objects.select_related('coordinate').all()
+
+    for restaurant_object in all_restaurants:
+        if not restaurant_object.coordinate:
+            coordinate_object = get_object_coordinate(restaurant_object.address)
+            restaurant_object.coordinate = coordinate_object
+            restaurant_object.coordinate.save()
 
     for order in order_details:
-        way_to_customer = dict()
-        orders_coordinate = fetch_coordinates(env.str('YANDEX_KEY'),
-                                    order.address)
-        if orders_coordinate:
-            for restaurant in order.recommended_restaurant.all():
-                restaurant_coordinate = (restaurant.coordinate.lat, restaurant.coordinate.lon)
-                normal_orders_coordinate = (orders_coordinate[1], orders_coordinate[0])
-                customer_to_order_distance = distance.distance(restaurant_coordinate, normal_orders_coordinate).km
-                #print(customer_to_order_distance)
-                way_to_customer[restaurant.name] = customer_to_order_distance
-            sorted_way_to_customer_keys = sorted(way_to_customer, key=way_to_customer.get)
-            sorted_way_to_customer = {
-                key: way_to_customer[key] for key in sorted_way_to_customer_keys
-            }
+
+        if all_coordinates.filter(address=order.address):
+            order_coordinate_object = all_coordinates.get(address=order.address)
+            order_coordinate = (
+                order_coordinate_object.lon, order_coordinate_object.lat)
+            #print(order_coordinate)
         else:
-            for restaurant in order.recommended_restaurant.all():
-                way_to_customer[restaurant.name] = 'не удалось расчитать расстояние'
-        order_context.append(
+            order_coordinate_object = get_object_coordinate(order.address)
+            if order_coordinate_object:
+                order_coordinate = (
+                    order_coordinate_object.lon, order_coordinate_object.lat)
+            else: order_coordinate = None
+
+        #print(f'координаты заказа{order_coordinate}')
+        sorted_way_to_customer = {}
+        way_to_customer = dict()
+        for restaurant in order.recommended_restaurant.all():
+
+            #print(f'{order} - {restaurant}')
+            if order_coordinate:
+                restaurant_coordinate = (restaurant.coordinate.lat, restaurant.coordinate.lon)
+                normal_orders_coordinate = (order_coordinate[1], order_coordinate[0])
+                order_to_restaurant_distance = distance.distance(restaurant_coordinate, normal_orders_coordinate).km
+                #print(order_to_restaurant_distance)
+                way_to_customer[restaurant.name] = order_to_restaurant_distance
+                sorted_way_to_customer_keys = sorted(
+                    way_to_customer, key=way_to_customer.get)
+                sorted_way_to_customer = {
+                    key: way_to_customer[key] for key in sorted_way_to_customer_keys
+                }
+            else:
+                sorted_way_to_customer[restaurant.name] = 'не удалось расчитать расстояние'
+            order_context.append(
             {
                 "id": order.id,
                 "order_status": order.get_order_status_display,
@@ -139,13 +162,10 @@ def view_orders(request):
                 "address": order.address,
                 "comments": order.comments,
                 "payment_method": order.get_payment_method_display,
-                "recommended_restaurants": sorted_way_to_customer,
-
-            }
+                "recommended_restaurants": sorted_way_to_customer,}
         )
-
-
-        context = {
-            'order_items': order_context,
-        }
+        #print(order_context)
+    context = {
+        'order_items': order_context,
+    }
     return render(request, template_name='order_items.html', context=context)
