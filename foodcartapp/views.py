@@ -89,18 +89,19 @@ def register_order(request):
         ]
     )
 
-    allrestaurantmenu = RestaurantMenuItem.objects.select_related('restaurant').select_related('product').all()
+    allrestaurantmenu = RestaurantMenuItem.objects.select_related(
+        'restaurant').select_related('product').all()
     all_restaurants = []
     suitable_restaurant = []
     all_order_in_one = False
 
     for product in products_order:
-        need_restaurants = allrestaurantmenu.filter(product__name=product['product'])
+        need_restaurants = allrestaurantmenu.filter(
+            product__name=product['product'])
         one_burger_restaurants = []
         for need_restaurant in need_restaurants:
             one_burger_restaurants.append(need_restaurant.restaurant.name)
         all_restaurants.append(one_burger_restaurants)
-    print(all_restaurants)
 
     if all_restaurants:
         first_burger_restaurants = all_restaurants[0]
@@ -109,15 +110,10 @@ def register_order(request):
                 if first_burger_restaurant not in current_burger_restaurants:
                     continue
             suitable_restaurant.append(first_burger_restaurant)
-        print(suitable_restaurant)
 
-        for restuarant in suitable_restaurant:
-            restuarant_object = get_object_or_404(Restaurant, name=restuarant)
+        for restaurant in suitable_restaurant:
+            restuarant_object = get_object_or_404(Restaurant, name=restaurant)
             create_order.recommended_restaurant.add(restuarant_object)
         create_order.save()
-
-
-
-
 
     return Response(serializer.data, status=201)

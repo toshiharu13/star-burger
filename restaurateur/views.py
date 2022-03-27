@@ -1,10 +1,8 @@
-from _collections import defaultdict
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import F, Sum
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from environs import Env
@@ -12,9 +10,6 @@ from geopy import distance
 
 from foodcartapp.models import Coordinate, FoodOrder, Product, Restaurant
 from foodcartapp.utills import get_object_coordinate
-
-env = Env()
-env.read_env()
 
 
 class Login(forms.Form):
@@ -104,7 +99,8 @@ def view_restaurants(request):
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     order_context = []
-    order_details = FoodOrder.objects.all().prefetch_related('orders_products').get_orders_sums()
+    order_details = FoodOrder.objects.all().prefetch_related(
+        'orders_products').get_orders_sums()
     all_coordinates = Coordinate.objects.all()
     all_restaurants = Restaurant.objects.select_related('coordinate').all()
 
@@ -120,7 +116,6 @@ def view_orders(request):
             order_coordinate_object = all_coordinates.get(address=order.address)
             order_coordinate = (
                 order_coordinate_object.lon, order_coordinate_object.lat)
-            #print(order_coordinate)
         else:
             order_coordinate_object = get_object_coordinate(order.address)
             if order_coordinate_object:
@@ -128,17 +123,17 @@ def view_orders(request):
                     order_coordinate_object.lon, order_coordinate_object.lat)
             else: order_coordinate = None
 
-        #print(f'координаты заказа{order_coordinate}')
         sorted_way_to_customer = {}
         way_to_customer = dict()
         for restaurant in order.recommended_restaurant.all():
 
-            #print(f'{order} - {restaurant}')
             if order_coordinate:
-                restaurant_coordinate = (restaurant.coordinate.lat, restaurant.coordinate.lon)
-                normal_orders_coordinate = (order_coordinate[1], order_coordinate[0])
-                order_to_restaurant_distance = distance.distance(restaurant_coordinate, normal_orders_coordinate).km
-                #print(order_to_restaurant_distance)
+                restaurant_coordinate = (
+                    restaurant.coordinate.lat, restaurant.coordinate.lon)
+                normal_orders_coordinate = (
+                    order_coordinate[1], order_coordinate[0])
+                order_to_restaurant_distance = distance.distance(
+                    restaurant_coordinate, normal_orders_coordinate).km
                 way_to_customer[restaurant.name] = order_to_restaurant_distance
                 sorted_way_to_customer_keys = sorted(
                     way_to_customer, key=way_to_customer.get)
@@ -160,7 +155,6 @@ def view_orders(request):
                 "payment_method": order.get_payment_method_display,
                 "recommended_restaurants": sorted_way_to_customer,}
         )
-        #print(order_context)
     context = {
         'order_items': order_context,
     }
