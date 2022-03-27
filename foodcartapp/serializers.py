@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
-from rest_framework.serializers import ListField
+from rest_framework.serializers import ListField, ModelSerializer
 
-from foodcartapp.models import FoodOrderProduct, FoodOrder
+from foodcartapp.models import FoodOrder, FoodOrderProduct
 
 
 class OrderSerialisator(ModelSerializer):

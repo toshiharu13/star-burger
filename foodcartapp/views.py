@@ -1,14 +1,15 @@
-from django.http import JsonResponse
-from django.templatetags.static import static
-from rest_framework.decorators import api_view
-from rest_framework import status
-from rest_framework.response import Response
 from django.db import transaction
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.templatetags.static import static
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-
-from .models import Product, FoodOrderProduct, FoodOrder, RestaurantMenuItem, Restaurant
 from foodcartapp.serializers import ProductSerialiser
+
+from .models import (FoodOrder, FoodOrderProduct, Product, Restaurant,
+                     RestaurantMenuItem)
 
 
 def banners_list_api(request):

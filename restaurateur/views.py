@@ -1,21 +1,17 @@
-from django import forms
-from django.shortcuts import redirect, render
-from django.views import View
-from django.urls import reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
 from _collections import defaultdict
-from django.shortcuts import get_object_or_404
+from django import forms
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import user_passes_test
 from django.db.models import F, Sum
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views import View
 from environs import Env
 from geopy import distance
 
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import views as auth_views
-from foodcartapp.models import FoodOrder, Coordinate
+from foodcartapp.models import Coordinate, FoodOrder, Product, Restaurant
 from foodcartapp.utills import get_object_coordinate
-
-
-from foodcartapp.models import Product, Restaurant
 
 env = Env()
 env.read_env()
