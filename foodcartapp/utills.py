@@ -1,7 +1,7 @@
 import requests
 from environs import Env
 
-from foodcartapp.models import Coordinate, Restaurant
+from foodcartapp.models import Coordinate
 from star_burger.wsgi import *
 
 env = Env()
