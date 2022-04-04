@@ -2,7 +2,6 @@ import requests
 from environs import Env
 
 from foodcartapp.models import Coordinate
-from star_burger.wsgi import *
 
 env = Env()
 env.read_env()
@@ -36,9 +35,6 @@ def get_object_coordinate(address):
             lat=rest_lat, )
         return restaurant_coordinate_oblect
 
-
-if __name__ == '__main__':
-    ...
 
 
 
