@@ -8,7 +8,7 @@ from django.views import View
 from geopy import distance
 
 from foodcartapp.models import Coordinate, FoodOrder, Product, Restaurant
-from foodcartapp.utills import get_object_coordinate
+from foodcartapp.yandex_adress_to_coordinates import get_object_coordinate
 
 
 class Login(forms.Form):
