@@ -101,13 +101,6 @@ def view_orders(request):
     order_details = FoodOrder.objects.all().prefetch_related(
         'orders_products').get_orders_sums()
     all_coordinates = Coordinate.objects.all()
-    all_restaurants = Restaurant.objects.select_related('coordinate').all()
-
-    for restaurant_object in all_restaurants:
-        if not restaurant_object.coordinate:
-            coordinate_object = get_object_coordinate(restaurant_object.address)
-            restaurant_object.coordinate = coordinate_object
-            restaurant_object.coordinate.save()
 
     for order in order_details:
         if all_coordinates.filter(address=order.address):
