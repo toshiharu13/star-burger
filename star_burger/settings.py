@@ -113,12 +113,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-INTERNAL_IPS = [
-    '127.0.0.1'
-]
-
+INTERNAL_IPS = ['127.0.0.1']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
-    os.path.join(BASE_DIR, "bundles"),
-]
+    os.path.join(BASE_DIR, "bundles"),]
+
+YANDEX_KEY = env.str('YANDEX_KEY')
