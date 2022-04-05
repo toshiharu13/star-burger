@@ -15,8 +15,8 @@ class FoodOrderQuerySet(models.QuerySet):
 
 class Coordinate(models.Model):
     address = models.CharField(max_length=50, blank=True)
-    lon = models.FloatField('Долгота')
-    lat = models.FloatField('Широта')
+    lon = models.FloatField('Долгота', null=True)
+    lat = models.FloatField('Широта', null=True)
 
     class Meta:
         verbose_name = 'Координаты'
