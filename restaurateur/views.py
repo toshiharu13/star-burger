@@ -8,7 +8,7 @@ from django.views import View
 from geopy import distance
 
 from foodcartapp.models import Coordinate, FoodOrder, Product, Restaurant
-from foodcartapp.utills import get_object_coordinate
+from foodcartapp.yandex_adress_to_coordinate import get_object_coordinate
 
 
 class Login(forms.Form):
@@ -111,7 +111,6 @@ def view_orders(request):
             restaurant_object.coordinate.save()
 
     for order in order_details:
-
         #if all_coordinates.filter(address=order.address):
         if order.address in all_normalised_coordinates:
             order_coordinate_object = all_coordinates.get(address=order.address)
@@ -131,31 +130,34 @@ def view_orders(request):
             if order_coordinate:
                 restaurant_coordinate = (
                     restaurant.coordinate.lat, restaurant.coordinate.lon)
+                object_coordinate_lon, object_coordinate_lon = order_coordinate
                 normal_orders_coordinate = (
-                    order_coordinate[1], order_coordinate[0])
+                    object_coordinate_lon, object_coordinate_lon)
                 order_to_restaurant_distance = distance.distance(
                     restaurant_coordinate, normal_orders_coordinate).km
                 way_to_customer[restaurant.name] = order_to_restaurant_distance
-                sorted_way_to_customer_keys = sorted(
-                    way_to_customer, key=way_to_customer.get)
-                sorted_way_to_customer = {
-                    key: way_to_customer[key] for key in sorted_way_to_customer_keys
-                }
+
             else:
                 sorted_way_to_customer[restaurant.name] = 'не удалось расчитать расстояние'
-            order_context.append(
-            {
-                "id": order.id,
-                "order_status": order.get_order_status_display,
-                "order_summ": order.order_summ,
-                "firstname": order.firstname,
-                "lastname": order.lastname,
-                "phonenumber": order.phonenumber,
-                "address": order.address,
-                "comments": order.comments,
-                "payment_method": order.get_payment_method_display,
-                "recommended_restaurants": sorted_way_to_customer,}
-        )
+
+        sorted_way_to_customer_keys = sorted(
+            way_to_customer, key=way_to_customer.get)
+        sorted_way_to_customer = {
+            key: way_to_customer[key] for key in sorted_way_to_customer_keys
+        }
+        order_context.append(
+        {
+            "id": order.id,
+            "order_status": order.get_order_status_display,
+            "order_summ": order.order_summ,
+            "firstname": order.firstname,
+            "lastname": order.lastname,
+            "phonenumber": order.phonenumber,
+            "address": order.address,
+            "comments": order.comments,
+            "payment_method": order.get_payment_method_display,
+            "recommended_restaurants": sorted_way_to_customer,}
+    )
     context = {
         'order_items': order_context,
     }

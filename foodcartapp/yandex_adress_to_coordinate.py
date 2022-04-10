@@ -1,11 +1,9 @@
+import django.conf
 import requests
-from environs import Env
 
 from foodcartapp.models import Coordinate
-from star_burger.wsgi import *
 
-env = Env()
-env.read_env()
+YANDEX_KEY = django.conf.settings.YANDEX_KEY
 
 
 def fetch_coordinates(apikey, address):
@@ -27,7 +25,7 @@ def fetch_coordinates(apikey, address):
 
 
 def get_object_coordinate(address):
-    coordinates = fetch_coordinates(env.str('YANDEX_KEY'), address)
+    coordinates = fetch_coordinates(YANDEX_KEY, address)
     if coordinates:
         rest_lon, rest_lat = coordinates
         restaurant_coordinate_oblect, created = Coordinate.objects.get_or_create(
@@ -36,9 +34,6 @@ def get_object_coordinate(address):
             lat=rest_lat, )
         return restaurant_coordinate_oblect
 
-
-if __name__ == '__main__':
-    ...
 
 
 
