@@ -59,7 +59,7 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-Создать файл .env и заполнить в нем переменные:
+Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 ```dotenv
 YANDEX_KEY = 'токен для работы с геосерверами Yandex'
 ```
@@ -148,7 +148,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
-
+- `YANDEX_KEY` — токен для работы с геосерверами Yandex
 ## Цели проекта
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
