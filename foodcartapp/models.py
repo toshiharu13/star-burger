@@ -162,7 +162,7 @@ class FoodOrder(models.Model):
     firstname = models.CharField('Имя', max_length=50)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
-    address = models.TextField('Адресс')
+    address = models.CharField('Адресс', max_length=100)
     objects = FoodOrderQuerySet.as_manager()
     order_status = models.CharField(
         'Статус заказа',
