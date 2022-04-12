@@ -13,6 +13,16 @@ class FoodOrderQuerySet(models.QuerySet):
         return order_summ
 
 
+class ProductQuerySet(models.QuerySet):
+    def available(self):
+        products = (
+            RestaurantMenuItem.objects
+            .filter(availability=True)
+            .values_list('product')
+        )
+        return self.filter(pk__in=products)
+
+
 class Coordinate(models.Model):
     address = models.CharField(max_length=50, blank=True)
     lon = models.FloatField('Долгота', null=True)
@@ -31,10 +41,7 @@ class Restaurant(models.Model):
         'название',
         max_length=50
     )
-    address = models.CharField(
-        'адрес',
-        max_length=100,
-        blank=True,)
+    address = models.CharField('адрес', max_length=100,)
     coordinate = models.ForeignKey(
         Coordinate,
         on_delete=models.SET_NULL,
@@ -43,8 +50,7 @@ class Restaurant(models.Model):
     contact_phone = models.CharField(
         'контактный телефон',
         max_length=50,
-        blank=True,
-    )
+        blank=True,)
 
     class Meta:
         verbose_name = 'ресторан'
@@ -54,21 +60,10 @@ class Restaurant(models.Model):
         return self.name
 
 
-class ProductQuerySet(models.QuerySet):
-    def available(self):
-        products = (
-            RestaurantMenuItem.objects
-            .filter(availability=True)
-            .values_list('product')
-        )
-        return self.filter(pk__in=products)
-
-
 class ProductCategory(models.Model):
     name = models.CharField(
         'название',
-        max_length=50
-    )
+        max_length=50)
 
     class Meta:
         verbose_name = 'категория'
@@ -81,8 +76,7 @@ class ProductCategory(models.Model):
 class Product(models.Model):
     name = models.CharField(
         'название',
-        max_length=50
-    )
+        max_length=50)
     category = models.ForeignKey(
         ProductCategory,
         verbose_name='категория',
@@ -95,22 +89,16 @@ class Product(models.Model):
         'цена',
         max_digits=8,
         decimal_places=2,
-        validators=[MinValueValidator(0)]
-    )
-    image = models.ImageField(
-        'картинка'
-    )
+        validators=[MinValueValidator(0)])
+    image = models.ImageField('картинка')
     special_status = models.BooleanField(
         'спец.предложение',
         default=False,
-        db_index=True,
-    )
+        db_index=True,)
     description = models.TextField(
         'описание',
         max_length=250,
-        blank=True,
-    )
-
+        blank=True,)
     objects = ProductQuerySet.as_manager()
 
     class Meta:
@@ -126,19 +114,16 @@ class RestaurantMenuItem(models.Model):
         Restaurant,
         related_name='menu_items',
         verbose_name="ресторан",
-        on_delete=models.CASCADE,
-    )
+        on_delete=models.CASCADE,)
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='menu_items',
-        verbose_name='продукт',
-    )
+        verbose_name='продукт',)
     availability = models.BooleanField(
         'в продаже',
         default=True,
-        db_index=True
-    )
+        db_index=True)
 
     class Meta:
         verbose_name = 'пункт меню ресторана'
@@ -174,7 +159,6 @@ class FoodOrder(models.Model):
     creation_date = models.DateTimeField(
         'Время создания заказа',
         default=timezone.now,
-        null=True,
         db_index=True)
     call_time = models.DateTimeField('Когда позвонить', null=True, blank=True)
     delivery_time = models.DateTimeField(
@@ -206,7 +190,6 @@ class FoodOrderProduct(models.Model):
                               on_delete=models.CASCADE,
                               related_name='orders_products',
                               verbose_name='Заказ')
-
     product = models.ForeignKey(Product,
                                 on_delete=models.CASCADE,
                                 related_name='products',
@@ -218,8 +201,7 @@ class FoodOrderProduct(models.Model):
         'цена',
         max_digits=8,
         decimal_places=2,
-        validators=[MinValueValidator(0)]
-    )
+        validators=[MinValueValidator(0)])
 
     class Meta:
         verbose_name = 'Элементы заказа'
@@ -227,5 +209,3 @@ class FoodOrderProduct(models.Model):
 
     def __str__(self):
         return f'Из заказа {self.order.pk} - {self.product.name} '
-
-
