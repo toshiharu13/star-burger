@@ -23,7 +23,7 @@ class Coordinate(models.Model):
         verbose_name_plural = 'Координаты'
 
     def __str__(self):
-        return f'{self.address} lon{self.lon}, lat{self.lat}'
+        return f'{self.address}'
 
 
 class Restaurant(models.Model):
