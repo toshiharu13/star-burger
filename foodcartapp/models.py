@@ -152,16 +152,18 @@ class RestaurantMenuItem(models.Model):
 
 
 class FoodOrder(models.Model):
+    ORDER_STATUS = (
+        ('NEW', 'Новый'),
+        ('PROGRESS', 'В работе'),
+        ('FINISHED', 'Закончен'),)
+    PAYMENT_METHOD = (
+        ('CASH', 'Наличными'),
+        ('CARD', 'Картой'), )
     firstname = models.CharField('Имя', max_length=50)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
     address = models.TextField('Адресс')
     objects = FoodOrderQuerySet.as_manager()
-    ORDER_STATUS = [
-        ('NEW', 'Новый'),
-        ('PROGRESS', 'В работе'),
-        ('FINISHED', 'Закончен'),
-    ]
     order_status = models.CharField(
         'Статус заказа',
         max_length=10,
@@ -179,9 +181,6 @@ class FoodOrder(models.Model):
         'Когда доставить',
         null=True,
         blank=True)
-    PAYMENT_METHOD = [
-        ('CASH', 'Наличными'),
-        ('CARD', 'Картой'),]
     payment_method = models.CharField(
         'Способ оплаты',
         max_length=10,
