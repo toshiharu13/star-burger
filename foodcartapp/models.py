@@ -171,7 +171,7 @@ class FoodOrder(models.Model):
         choices=PAYMENT_METHOD,
         blank=True,
         db_index=True)
-    recommended_restaurant = models.ManyToManyField(
+    recommended_restaurants = models.ManyToManyField(
         Restaurant,
         verbose_name='Рекомендованые рестораны',
         blank=True,

@@ -125,7 +125,7 @@ def view_orders(request):
 
         sorted_way_to_customer = {}
         way_to_customer = dict()
-        for restaurant in order.recommended_restaurant.all():
+        for restaurant in order.recommended_restaurants.all():
 
             if order_coordinate:
                 restaurant_coordinate = (

@@ -113,7 +113,7 @@ def register_order(request):
 
         for restaurant in suitable_restaurant:
             restuarant_object = get_object_or_404(Restaurant, name=restaurant)
-            create_order.recommended_restaurant.add(restuarant_object)
+            create_order.recommended_restaurants.add(restuarant_object)
         create_order.save()
 
     return Response(serializer.data, status=201)
