@@ -188,7 +188,7 @@ class FoodOrder(models.Model):
 class FoodOrderProduct(models.Model):
     order = models.ForeignKey(FoodOrder,
                               on_delete=models.CASCADE,
-                              related_name='orders_products',
+                              related_name='products',
                               verbose_name='Заказ')
     product = models.ForeignKey(Product,
                                 on_delete=models.CASCADE,
