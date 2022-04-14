@@ -8,8 +8,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 class FoodOrderQuerySet(models.QuerySet):
     def get_orders_sums(self):
         order_summ = self.annotate(order_summ=Sum(
-            F('orders_products__price') *
-            F('orders_products__quantity')))
+            F('products__price') *
+            F('products__quantity')))
         return order_summ
 
 

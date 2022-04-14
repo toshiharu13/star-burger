@@ -69,7 +69,6 @@ def register_order(request):
     serializer = ProductSerialiser(data=request.data)
     serializer.is_valid(raise_exception=True)
     products_order = serializer.validated_data['products']
-    #print(serializer.validated_data['products'])
 
     create_order = FoodOrder.objects.create(
         firstname=serializer.validated_data['firstname'],
