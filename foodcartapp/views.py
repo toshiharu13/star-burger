@@ -91,14 +91,14 @@ def register_order(request):
     all_restaurants_menu = RestaurantMenuItem.objects.select_related(
         'restaurant').select_related('product').all()
     splitted_suitable_restaurants = []
-    suitable_restaurant = []
+    suitable_restaurants = []
 
     for product in products_order:
         suitable_restaurants = all_restaurants_menu.filter(
             product__name=product['product'])
         sorted_by_product_restaurants = []
-        for suitable_restaurant in suitable_restaurants:
-            sorted_by_product_restaurants.append(suitable_restaurant.restaurant.name)
+        for suitable_restaurants in suitable_restaurants:
+            sorted_by_product_restaurants.append(suitable_restaurants.restaurant.name)
         splitted_suitable_restaurants.append(sorted_by_product_restaurants)
 
     if splitted_suitable_restaurants:
@@ -107,9 +107,9 @@ def register_order(request):
             for current_burger_restaurants in splitted_suitable_restaurants:
                 if first_burger_restaurant not in current_burger_restaurants:
                     continue
-            suitable_restaurant.append(first_burger_restaurant)
+            suitable_restaurants.append(first_burger_restaurant)
 
-        for restaurant in suitable_restaurant:
+        for restaurant in suitable_restaurants:
             restuarant_object = get_object_or_404(Restaurant, name=restaurant)
             new_order.recommended_restaurants.add(restuarant_object)
         new_order.save()
