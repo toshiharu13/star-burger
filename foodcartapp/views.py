@@ -68,7 +68,7 @@ def product_list_api(request):
 def register_order(request):
     serializer = ProductSerialiser(data=request.data)
     serializer.is_valid(raise_exception=True)
-    products_order = serializer.validated_data['products']
+    order_products = serializer.validated_data['products']
 
     new_order = FoodOrder.objects.create(
         firstname=serializer.validated_data['firstname'],
@@ -84,7 +84,7 @@ def register_order(request):
                              quantity=(product['quantity']),
                              price=Product.objects.get(
                                  name=product['product']).price)
-            for product in products_order
+            for product in order_products
         ]
     )
 
@@ -93,7 +93,7 @@ def register_order(request):
     splitted_suitable_restaurants = []
     suitable_restaurants = []
 
-    for product in products_order:
+    for product in order_products:
         suitable_restaurants = all_restaurants_menu.filter(
             product__name=product['product'])
         sorted_by_product_restaurants = []
