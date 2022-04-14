@@ -99,7 +99,7 @@ def view_restaurants(request):
 def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related(
-        'orders_products').get_orders_sums()
+        'products').get_orders_sums()
     all_coordinates = Coordinate.objects.all()
     all_normalised_coordinates = [str(x) for x in all_coordinates]
     all_restaurants = Restaurant.objects.select_related('coordinate').all()
