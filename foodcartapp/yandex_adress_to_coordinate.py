@@ -12,7 +12,8 @@ def fetch_coordinates(apikey, address):
         "format": "json",
     })
     response.raise_for_status()
-    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+    found_places = response.json(
+    )['response']['GeoObjectCollection']['featureMember']
 
     if not found_places:
         return None
@@ -27,14 +28,8 @@ def get_object_coordinates(address):
     coordinates = fetch_coordinates(yandex_key, address)
     if coordinates:
         rest_lon, rest_lat = coordinates
-        restaurant_coordinate_oblect, created = Coordinate.objects.get_or_create(
+        restaurant_coordinate_object, created = Coordinate.objects.get_or_create(
             address=address,
             lon=rest_lon,
             lat=rest_lat, )
-        return restaurant_coordinate_oblect
-
-
-
-
-
-
+        return restaurant_coordinate_object
