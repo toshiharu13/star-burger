@@ -22,7 +22,7 @@ def fetch_coordinates(apikey, address):
     return lon, lat
 
 
-def get_object_coordinate(address):
+def get_object_coordinates(address):
     yandex_key = django.conf.settings.YANDEX_KEY
     coordinates = fetch_coordinates(yandex_key, address)
     if coordinates:

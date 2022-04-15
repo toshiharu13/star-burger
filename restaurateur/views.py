@@ -8,7 +8,7 @@ from django.views import View
 from geopy import distance
 
 from foodcartapp.models import Coordinate, FoodOrder, Product, Restaurant
-from foodcartapp.yandex_adress_to_coordinate import get_object_coordinate
+from foodcartapp.yandex_adress_to_coordinate import get_object_coordinates
 
 
 class Login(forms.Form):
@@ -106,7 +106,7 @@ def view_orders(request):
 
     for restaurant_object in all_restaurants:
         if not restaurant_object.coordinate:
-            coordinate_object = get_object_coordinate(restaurant_object.address)
+            coordinate_object = get_object_coordinates(restaurant_object.address)
             restaurant_object.coordinate = coordinate_object
             restaurant_object.coordinate.save()
 
@@ -116,7 +116,7 @@ def view_orders(request):
             order_coordinate = (
                 order_coordinate_object.lon, order_coordinate_object.lat)
         else:
-            order_coordinate_object = get_object_coordinate(order.address)
+            order_coordinate_object = get_object_coordinates(order.address)
             if order_coordinate_object:
                 order_coordinate = (
                     order_coordinate_object.lon, order_coordinate_object.lat)
