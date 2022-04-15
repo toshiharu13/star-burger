@@ -28,8 +28,12 @@ def get_object_coordinates(address):
     coordinates = fetch_coordinates(yandex_key, address)
     if coordinates:
         rest_lon, rest_lat = coordinates
-        restaurant_coordinate_object, created = Coordinate.objects.get_or_create(
-            address=address,
-            lon=rest_lon,
-            lat=rest_lat, )
-        return restaurant_coordinate_object
+    else:
+        rest_lon, rest_lat = None, None
+
+    restaurant_coordinate_object, created = Coordinate.objects.get_or_create(
+        address=address,
+        lon=rest_lon,
+        lat=rest_lat, )
+
+    return restaurant_coordinate_object
