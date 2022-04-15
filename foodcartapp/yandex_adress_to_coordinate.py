@@ -3,8 +3,6 @@ import requests
 
 from foodcartapp.models import Coordinate
 
-YANDEX_KEY = django.conf.settings.YANDEX_KEY
-
 
 def fetch_coordinates(apikey, address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
@@ -25,7 +23,8 @@ def fetch_coordinates(apikey, address):
 
 
 def get_object_coordinate(address):
-    coordinates = fetch_coordinates(YANDEX_KEY, address)
+    yandex_key = django.conf.settings.YANDEX_KEY
+    coordinates = fetch_coordinates(yandex_key, address)
     if coordinates:
         rest_lon, rest_lat = coordinates
         restaurant_coordinate_oblect, created = Coordinate.objects.get_or_create(

@@ -111,7 +111,6 @@ def view_orders(request):
             restaurant_object.coordinate.save()
 
     for order in order_details:
-        #if all_coordinates.filter(address=order.address):
         if order.address in all_normalised_coordinates:
             order_coordinate_object = all_coordinates.get(address=order.address)
             order_coordinate = (
