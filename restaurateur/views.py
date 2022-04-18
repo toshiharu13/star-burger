@@ -100,7 +100,11 @@ def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related(
         'products').get_orders_sums()
-    all_coordinates = Coordinate.objects.all()
+    orders_addresses = []
+    for order in order_details:
+        orders_addresses.append(order.address)
+
+    all_coordinates = Coordinate.objects.filter(address__in=orders_addresses)
     all_normalised_coordinates = [str(x) for x in all_coordinates]
     all_restaurants = Restaurant.objects.select_related('coordinate').all()
 
