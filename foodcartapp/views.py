@@ -88,11 +88,6 @@ def register_order(request):
             for product in order_products
         ]
     )
-    suitable_restaurants = get_suitable_restaurants(order_products)
-
-    for restaurant in suitable_restaurants:
-        restuarant_object = get_object_or_404(Restaurant, name=restaurant)
-        new_order.recommended_restaurants.add(restuarant_object)
-    new_order.save()
+    new_order.get_suitable_restaurants(order_products)
 
     return Response(serializer.data, status=201)
