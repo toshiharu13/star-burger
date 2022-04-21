@@ -99,7 +99,7 @@ def view_restaurants(request):
 def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related(
-        'products').get_orders_sums()
+        'food_order_products').get_orders_sums()
     orders_addresses = []
     for order in order_details:
         orders_addresses.append(order.address)

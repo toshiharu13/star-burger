@@ -217,11 +217,11 @@ class FoodOrder(models.Model):
 class FoodOrderProduct(models.Model):
     order = models.ForeignKey(FoodOrder,
                               on_delete=models.CASCADE,
-                              related_name='products',
+                              related_name='food_order_products',
                               verbose_name='Заказ')
     product = models.ForeignKey(Product,
                                 on_delete=models.CASCADE,
-                                related_name='from_orders',
+                                related_name='food_order_products',
                                 verbose_name='Продукты заказа')
     quantity = models.PositiveIntegerField(
         'количество',
