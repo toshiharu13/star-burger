@@ -177,7 +177,6 @@ class FoodOrder(models.Model):
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
     address = models.CharField('Адресс', max_length=100)
-    objects = FoodOrderQuerySet.as_manager()
     order_status = models.CharField(
         'Статус заказа',
         max_length=10,
@@ -205,6 +204,7 @@ class FoodOrder(models.Model):
         verbose_name='Рекомендованые рестораны',
         blank=True,
         related_name='orders')
+    objects = FoodOrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Заказ'
