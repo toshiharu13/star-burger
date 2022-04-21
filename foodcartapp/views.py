@@ -10,7 +10,6 @@ from foodcartapp.serializers import ProductSerialiser
 
 from .models import (FoodOrder, FoodOrderProduct, Product, Restaurant,
                      RestaurantMenuItem)
-from .suitable_restaurants import get_suitable_restaurants
 
 
 def banners_list_api(request):
