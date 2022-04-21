@@ -9,8 +9,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 class FoodOrderQuerySet(models.QuerySet):
     def get_orders_sums(self):
         order_summ = self.annotate(order_summ=Sum(
-            F('products__price') *
-            F('products__quantity')))
+            F('food_order_products__price') *
+            F('food_order_products__quantity')))
         return order_summ
 
     def get_suitable_restaurants(self, order_products):
