@@ -14,7 +14,8 @@ class FoodOrderQuerySet(models.QuerySet):
         return order_summ
 
     def get_suitable_restaurants(self, order_products):
-        all_restaurants_menu = RestaurantMenuItem.objects.select_related(
+        all_restaurants_menu = RestaurantMenuItem.objects.filter(
+            availability=True).select_related(
             'restaurant').select_related('product').all()
         splitted_suitable_restaurants = []
         suitable_restaurants = []
