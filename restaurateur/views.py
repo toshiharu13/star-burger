@@ -104,26 +104,28 @@ def view_orders(request):
     for order in order_details:
         orders_addresses.append(order.address)
 
-    orders_coordinates_objects = Coordinate.objects.filter(address__in=orders_addresses)
-    orders_normalised_addresses = [str(x) for x in orders_coordinates_objects]
+    orders_coordinates = Coordinate.objects.filter(
+        address__in=orders_addresses)
+    orders_normalised_addresses = [str(x) for x in orders_coordinates]
     all_restaurants = Restaurant.objects.select_related('coordinate').all()
 
-    for restaurant_object in all_restaurants:
-        if not restaurant_object.coordinate:
-            coordinate_object = get_object_coordinates(restaurant_object.address)
-            restaurant_object.coordinate = coordinate_object
-            restaurant_object.coordinate.save()
+    for restaurant in all_restaurants:
+        if not restaurant.coordinate:
+            restaurant_coordinate = get_object_coordinates(restaurant.address)
+            restaurant.coordinate = restaurant_coordinate
+            restaurant.coordinate.save()
 
     for order in order_details:
         if order.address in orders_normalised_addresses:
-            order_coordinate_object = orders_coordinates_objects.get(address=order.address)
+            order_coordinate = orders_coordinates.get(
+                address=order.address)
             order_coordinate = (
-                order_coordinate_object.lon, order_coordinate_object.lat)
+                order_coordinate.lon, order_coordinate.lat)
         else:
-            order_coordinate_object = get_object_coordinates(order.address)
-            if order_coordinate_object:
+            order_coordinate = get_object_coordinates(order.address)
+            if order_coordinate:
                 order_coordinate = (
-                    order_coordinate_object.lon, order_coordinate_object.lat)
+                    order_coordinate.lon, order_coordinate.lat)
             else: order_coordinate = None
 
         sorted_way_to_customer = {}
