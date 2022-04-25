@@ -1,7 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import F, Sum
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -38,8 +38,15 @@ class FoodOrderQuerySet(models.QuerySet):
                     suitable_restaurants.append(first_burger_restaurant)
 
         for restaurant in suitable_restaurants:
-            restuarant_object = get_object_or_404(Restaurant, name=restaurant)
-            self.recommended_restaurants.add(restuarant_object)
+            try:
+                restuarant_object = Restaurant.objects.get(name=restaurant)
+                self.recommended_restaurants.add(restuarant_object)
+            except ObjectDoesNotExist:
+                print('Объект не найден')
+                continue
+            except MultipleObjectsReturned:
+                print('Найдено более одного совпадения')
+                continue
         self.save()
 
 
