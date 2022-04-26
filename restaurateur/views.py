@@ -106,7 +106,7 @@ def view_orders(request):
 
     orders_coordinates = Coordinate.objects.filter(
         address__in=orders_addresses)
-    orders_normalised_addresses = [str(x) for x in orders_coordinates]
+    normalised_orders_coordinates = list(orders_coordinates.values('address', 'lon', 'lat'))
     all_restaurants = Restaurant.objects.select_related('coordinate').all()
 
     for restaurant in all_restaurants:
@@ -116,12 +116,14 @@ def view_orders(request):
             restaurant.coordinate.save()
 
     for order in order_details:
-        if order.address in orders_normalised_addresses:
-            order_coordinate = orders_coordinates.get(
-                address=order.address)
-            order_coordinate = (
-                order_coordinate.lon, order_coordinate.lat)
-        else:
+        in_base = False
+        for normalised_order_coordinates in normalised_orders_coordinates:
+            if order.address in normalised_order_coordinates['address']:
+                order_coordinate = (
+                    normalised_order_coordinates['lon'], normalised_order_coordinates['lat'])
+                in_base = True
+                continue
+        if not in_base:
             order_coordinate = get_object_coordinates(order.address)
             if order_coordinate:
                 order_coordinate = (
