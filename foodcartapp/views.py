@@ -76,7 +76,6 @@ def register_order(request):
         phonenumber=serializer.validated_data['phonenumber'],
         address=serializer.validated_data['address']
     )
-
     FoodOrderProduct.objects.bulk_create(
         [
             FoodOrderProduct(order=new_order,
@@ -87,6 +86,6 @@ def register_order(request):
             for product in order_products
         ]
     )
-    new_order.get_suitable_restaurants(order_products)
+    FoodOrder.objects.filter(id=new_order.id).get_suitable_restaurants(order_products)
 
     return Response(serializer.data, status=201)
