@@ -39,8 +39,8 @@ class FoodOrderQuerySet(models.QuerySet):
 
         for suitable_restaurant in suitable_restaurants:
             try:
-                restuarant = Restaurant.objects.get(name=suitable_restaurant)
-                self.first().recommended_restaurants.add(restuarant)
+                self.first().recommended_restaurants.add(Restaurant.objects.get(
+                    name=suitable_restaurant))
             except ObjectDoesNotExist:
                 continue
             except MultipleObjectsReturned:
