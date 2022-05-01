@@ -42,10 +42,8 @@ class FoodOrderQuerySet(models.QuerySet):
                 restuarant = Restaurant.objects.get(name=suitable_restaurant)
                 self.first().recommended_restaurants.add(restuarant)
             except ObjectDoesNotExist:
-                print('Объект не найден')
                 continue
             except MultipleObjectsReturned:
-                print('Найдено более одного совпадения')
                 continue
         self.first().save()
 
