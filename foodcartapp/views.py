@@ -86,6 +86,4 @@ def register_order(request):
             for product in order_products
         ]
     )
-    FoodOrder.objects.filter(id=new_order.id).get_suitable_restaurants(order_products)
-
     return Response(serializer.data, status=201)

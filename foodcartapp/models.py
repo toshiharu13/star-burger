@@ -13,39 +13,45 @@ class FoodOrderQuerySet(models.QuerySet):
             F('food_order_products__quantity')))
         return order_summ
 
-    def get_suitable_restaurants(self, order_products):
+    def get_suitable_restaurants(self):
         normalized_restaurants_menu = list(RestaurantMenuItem.objects.filter(
             availability=True).select_related(
             'restaurant').select_related('product').all().values(
             'restaurant__name', 'product__name'))
+        food_orders_products = FoodOrderProduct.objects.all().select_related(
+            'order').select_related('product')
         splitted_suitable_restaurants = []
-        suitable_restaurants = set()
+        suitable_restaurants_menu = set()
 
-        for product in order_products:
-            suitable_restaurants_menu = set()
+        for order_product in food_orders_products:
             for suitable_restaurant in normalized_restaurants_menu:
-                if str(product['product']) == suitable_restaurant['product__name']:
+                if order_product.product.name == suitable_restaurant['product__name']:
                     suitable_restaurants_menu.add(
                         suitable_restaurant['restaurant__name'])
+            suitable_restaurants = set()
             splitted_suitable_restaurants.append(suitable_restaurants_menu)
 
-        if splitted_suitable_restaurants:
-            template_burger_restaurants = splitted_suitable_restaurants[0]
-            for template_burger_restaurant in template_burger_restaurants:
-                for current_burger_restaurants in splitted_suitable_restaurants:
-                    if template_burger_restaurant not in current_burger_restaurants:
-                        continue
-                    suitable_restaurants.add(template_burger_restaurant)
+            if splitted_suitable_restaurants:
+                template_burger_restaurants = splitted_suitable_restaurants[0]
+                for template_burger_restaurant in template_burger_restaurants:
+                    for current_burger_restaurants in splitted_suitable_restaurants:
+                        if template_burger_restaurant not in current_burger_restaurants:
+                            continue
+                        suitable_restaurants.add(template_burger_restaurant)
 
-        for suitable_restaurant in suitable_restaurants:
-            try:
-                self.first().recommended_restaurants.add(Restaurant.objects.get(
-                    name=suitable_restaurant))
-            except ObjectDoesNotExist:
-                continue
-            except MultipleObjectsReturned:
-                continue
-        self.first().save()
+            order_recommended_restaurants = self.get(
+                pk=order_product.order.pk)
+            if not order_recommended_restaurants.recommended_restaurants.all():
+                for suitable_restaurant in suitable_restaurants:
+                    try:
+                        order_recommended_restaurants.recommended_restaurants.add(
+                            Restaurant.objects.get(name=suitable_restaurant)
+                        )
+                    except ObjectDoesNotExist:
+                        continue
+                    except MultipleObjectsReturned:
+                        continue
+                order_recommended_restaurants.save()
 
 
 class ProductQuerySet(models.QuerySet):

@@ -101,6 +101,9 @@ def view_orders(request):
     order_details = FoodOrder.objects.all().prefetch_related(
         'food_order_products').get_orders_sums()
     orders_addresses = []
+
+    FoodOrder.objects.all().get_suitable_restaurants()
+
     for order in order_details:
         orders_addresses.append(order.address)
 
