@@ -215,7 +215,14 @@ class FoodOrder(models.Model):
         Restaurant,
         verbose_name='Рекомендованые рестораны',
         blank=True,
-        related_name='orders')
+        related_name='food_orders')
+    assigned_restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="orders",
+        verbose_name='Назначеный ресторан')
     objects = FoodOrderQuerySet.as_manager()
 
     class Meta:
