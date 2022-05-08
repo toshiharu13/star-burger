@@ -14,9 +14,9 @@ class FoodOrderQuerySet(models.QuerySet):
         return order_summ
 
     def get_suitable_restaurants(self):
-        normalized_restaurants_menu = list(RestaurantMenuItem.objects.filter(
+        normalized_restaurants_menu = (RestaurantMenuItem.objects.filter(
             availability=True).select_related(
-            'restaurant').select_related('product').all().values(
+            'restaurant').select_related('product').all().values_list(
             'restaurant__name', 'product__name'))
         food_orders_products = FoodOrderProduct.objects.all().select_related(
             'order').select_related('product')
@@ -25,9 +25,9 @@ class FoodOrderQuerySet(models.QuerySet):
 
         for order_product in food_orders_products:
             for suitable_restaurant in normalized_restaurants_menu:
-                if order_product.product.name == suitable_restaurant['product__name']:
-                    suitable_restaurants_menu.add(
-                        suitable_restaurant['restaurant__name'])
+                restaurant_name, product_name = suitable_restaurant
+                if order_product.product.name == product_name:
+                    suitable_restaurants_menu.add(restaurant_name)
             suitable_restaurants = set()
             splitted_suitable_restaurants.append(suitable_restaurants_menu)
 
