@@ -99,10 +99,9 @@ def view_restaurants(request):
 def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related(
-        'food_order_products').get_orders_sums()
+        'food_order_products').select_related(
+        'assigned_restaurant').get_orders_sums().get_suitable_restaurants()
     orders_addresses = []
-
-    FoodOrder.objects.all().get_suitable_restaurants()
 
     for order in order_details:
         orders_addresses.append(order.address)
@@ -119,14 +118,14 @@ def view_orders(request):
             restaurant.coordinate.save()
 
     for order in order_details:
-        in_base = False
+        address_found = False
         for normalised_order_coordinates in normalised_orders_coordinates:
             if order.address in normalised_order_coordinates['address']:
                 order_coordinate = (
                     normalised_order_coordinates['lon'], normalised_order_coordinates['lat'])
-                in_base = True
+                address_found = True
                 continue
-        if not in_base:
+        if not address_found:
             order_coordinate = get_object_coordinates(order.address)
             if order_coordinate:
                 order_coordinate = (
@@ -135,9 +134,9 @@ def view_orders(request):
 
         sorted_way_to_customer = {}
         way_to_customer = dict()
-        for restaurant in order.recommended_restaurants.all():
-
+        for restaurant in order.suitable_restaurants:
             if order_coordinate:
+                restaurant = all_restaurants.get(name=restaurant)
                 restaurant_coordinate = (
                     restaurant.coordinate.lat, restaurant.coordinate.lon)
                 object_coordinate_lon, object_coordinate_lon = order_coordinate

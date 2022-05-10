@@ -15,7 +15,8 @@ class FoodOrderQuerySet(models.QuerySet):
 
     def get_suitable_restaurants(self):
         orders_recommended_restaurants = {}
-        normalized_restaurants_menu = (RestaurantMenuItem.objects.filter(
+        normalized_restaurants_menu = (
+            RestaurantMenuItem.objects.filter(
             availability=True).select_related(
             'restaurant').select_related('product').all().values_list(
             'restaurant__name', 'product__name'))
@@ -31,29 +32,18 @@ class FoodOrderQuerySet(models.QuerySet):
                         suitable_restaurants_menu.add(restaurant_name)
                 splitted_suitable_restaurants.append(suitable_restaurants_menu)
 
-            if splitted_suitable_restaurants:
-                template_burger_restaurants = splitted_suitable_restaurants[0]
-                for template_burger_restaurant in template_burger_restaurants:
-                    for current_burger_restaurants in splitted_suitable_restaurants:
-                        if template_burger_restaurant not in current_burger_restaurants:
-                            continue
-                        suitable_restaurants.add(template_burger_restaurant)
+            if not splitted_suitable_restaurants:
+                continue
+            template_burger_restaurants = splitted_suitable_restaurants[0]
+            for template_burger_restaurant in template_burger_restaurants:
+                for current_burger_restaurants in splitted_suitable_restaurants:
+                    if template_burger_restaurant not in current_burger_restaurants:
+                        continue
+                    suitable_restaurants.add(template_burger_restaurant)
             orders_recommended_restaurants[order_product.order.pk] = suitable_restaurants
-
-            for order_pk in orders_recommended_restaurants.keys():
-                order = FoodOrder.objects.get(pk=order_pk)
-                if not order.recommended_restaurants.all():
-                    for restaurant in orders_recommended_restaurants[order_pk]:
-                        try:
-                            order.recommended_restaurants.add(
-                                Restaurant.objects.get(name=restaurant)
-                            )
-                        except ObjectDoesNotExist:
-                            continue
-                        except MultipleObjectsReturned:
-                            continue
-
-            FoodOrder.objects.all().update()
+            order.suitable_restaurants = suitable_restaurants
+            print(order.suitable_restaurants)
+        return self
 
 
 class ProductQuerySet(models.QuerySet):
@@ -213,17 +203,12 @@ class FoodOrder(models.Model):
         choices=PAYMENT_METHOD,
         blank=True,
         db_index=True)
-    recommended_restaurants = models.ManyToManyField(
-        Restaurant,
-        verbose_name='Рекомендованые рестораны',
-        blank=True,
-        related_name='food_orders')
     assigned_restaurant = models.ForeignKey(
         Restaurant,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='food_orders',
+        related_name='assigned_for_food_orders',
         verbose_name='Назначеный ресторан')
     objects = FoodOrderQuerySet.as_manager()
 
