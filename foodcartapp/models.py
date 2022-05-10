@@ -26,8 +26,7 @@ class FoodOrderQuerySet(models.QuerySet):
         for order in self:
             order_products = order.food_order_products.all()
             for order_product in order_products:
-                for suitable_restaurant in normalized_restaurants_menu:
-                    restaurant_name, product_name = suitable_restaurant
+                for restaurant_name, product_name in normalized_restaurants_menu:
                     if order_product.product.name == product_name:
                         suitable_restaurants_menu.add(restaurant_name)
                 splitted_suitable_restaurants.append(suitable_restaurants_menu)
