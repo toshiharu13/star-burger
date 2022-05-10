@@ -191,7 +191,7 @@ class FoodOrder(models.Model):
     firstname = models.CharField('Имя', max_length=50)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
     phonenumber = PhoneNumberField('Номер телефона', db_index=True)
-    address = models.CharField('Адресс', max_length=100)
+    address = models.CharField('Адрес', max_length=100)
     order_status = models.CharField(
         'Статус заказа',
         max_length=10,
@@ -224,7 +224,7 @@ class FoodOrder(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name="orders",
+        related_name='food_orders',
         verbose_name='Назначеный ресторан')
     objects = FoodOrderQuerySet.as_manager()
 
