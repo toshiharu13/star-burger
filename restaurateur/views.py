@@ -99,7 +99,7 @@ def view_restaurants(request):
 def view_orders(request):
     order_context = []
     order_details = FoodOrder.objects.all().prefetch_related(
-        'food_order_products').select_related(
+        'food_order_products__product').select_related(
         'assigned_restaurant').get_orders_sums().get_suitable_restaurants()
     orders_addresses = []
 
@@ -109,7 +109,7 @@ def view_orders(request):
     orders_coordinates = Coordinate.objects.filter(
         address__in=orders_addresses)
     normalised_orders_coordinates = list(orders_coordinates.values('address', 'lon', 'lat'))
-    all_restaurants = Restaurant.objects.select_related('coordinate').all()
+    all_restaurants = Restaurant.objects.select_related('coordinate')
 
     for restaurant in all_restaurants:
         if not restaurant.coordinate:
