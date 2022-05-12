@@ -42,7 +42,6 @@ class FoodOrderQuerySet(models.QuerySet):
                     suitable_restaurants.add(template_burger_restaurant)
             orders_recommended_restaurants[order_product.order.pk] = suitable_restaurants
             order.suitable_restaurants = suitable_restaurants
-            print(order.suitable_restaurants)
         return self
 
 
