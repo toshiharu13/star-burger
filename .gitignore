@@ -143,3 +143,6 @@ dmypy.json
 cython_debug/
 
 .parcel-cache/
+
+# static files
+staticfiles/
