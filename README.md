@@ -61,7 +61,10 @@ python manage.py migrate
 
 Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 ```dotenv
-YANDEX_KEY = 'токен для работы с геосерверами Yandex'
+YANDEX_KEY = 'Токен для работы с геосерверами Yandex'
+```
+```dotenv
+ROLLBAR_KEY = 'Токен для работы с системой мониторинга rollbar.com'
 ```
 
 Запустите сервер:
