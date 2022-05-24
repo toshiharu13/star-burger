@@ -126,11 +126,13 @@ STATICFILES_DIRS = [
 YANDEX_KEY = env.str('YANDEX_KEY')
 ROLLBAR_KEY = env.str('ROLLBAR_KEY')
 
-rollbar.init(ROLLBAR_KEY, 'development')
+#rollbar.init(ROLLBAR_KEY, 'development')
+rollbar.init(ROLLBAR_KEY)
+
 
 ROLLBAR = {
     'access_token': ROLLBAR_KEY,
-    'environment': 'development',
+    'environment': 'development' if DEBUG else 'production',
     'branch': 'master',
     'root': BASE_DIR,
     'ignorable_404_urls': (
