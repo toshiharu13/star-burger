@@ -1,4 +1,6 @@
 import os
+import re
+import rollbar
 
 import dj_database_url
 from environs import Env
@@ -38,6 +40,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
 ]
 
 ROOT_URLCONF = 'star_burger.urls'
@@ -120,3 +124,17 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "bundles"),]
 
 YANDEX_KEY = env.str('YANDEX_KEY')
+ROLLBAR_KEY = env.str('ROLLBAR_KEY')
+
+rollbar.init(ROLLBAR_KEY, 'development')
+
+ROLLBAR = {
+    'access_token': ROLLBAR_KEY,
+    'environment': 'development',
+    'branch': 'master',
+    'root': BASE_DIR,
+    'ignorable_404_urls': (
+        re.compile('/index\.php'),
+        re.compile('/foobar'),
+    ),
+}
