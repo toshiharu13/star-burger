@@ -62,12 +62,6 @@ python manage.py migrate
 Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 - `YANDEX_KEY` — токен для работы с геосерверами Yandex
 - `ROLLBAR_KEY` — токен для работы с системой мониторинга rollbar.com
-- `DB_ENGINE` — используемое СУБД, по умолчанию postgres
-- `DB_NAME` — имя используемой БД
-- `POSTGRES_USER` — пользователь БД
-- `POSTGRES_PASSWORD` — пароль доступа к БД
-- `DB_HOST` — хост БД, по умолчанию localhost
-- `DB_PORT` — порт ДБ, по умолчанию 5432
 
 Запустите сервер:
 
@@ -147,12 +141,8 @@ Parcel будет следить за файлами в каталоге `bundle
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_KEY` — токен для работы с геосерверами Yandex
 - `ROLLBAR_KEY` — токен для работы с системой мониторинга rollbar.com
-- `DB_ENGINE` — используемое СУБД, по умолчанию postgres
-- `DB_NAME` — имя используемой БД
-- `POSTGRES_USER` — пользователь БД
-- `POSTGRES_PASSWORD` — пароль доступа к БД
-- `DB_HOST` — хост БД, по умолчанию localhost
-- `DB_PORT` — порт ДБ, по умолчанию 5432
+- `DB_URL` — в формате: postgres://<пользователь ДБ>:<пароль пользователя ДБ>@<хост ДБ>:<порт ДБ>/<имя БД>
+
 ## Цели проекта
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
