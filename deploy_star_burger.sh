@@ -12,11 +12,12 @@ npm ci --dev
 # Пересоберёт статику Django
 ./venv/bin/python manage.py  collectstatic
 # Накатит миграции
+./venv/bin/python manage.py makemigrations
 ./venv/bin/python manage.py migrate
 # Перезапустит сервисы Systemd
 systemctl restart django-burger.service
 # Сообщит об успешном завершении деплоя
 echo "----------------"
-echo "Deploy complite!"
+echo "Deploy complete!"
 echo "----------------"
 
