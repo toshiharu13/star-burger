@@ -25,8 +25,7 @@ echo "restart Systemd service"
 systemctl restart django-burger.service
 
 echo  "Send info about deploy to rollbar.com"
-comit_number=$(git rev-parse --short HEAD)
-curl -H "X-Rollbar-Access-Token: ffd0c1e6e6d44392be42d0e83821f8d4" -H "Content-Type: application/json" -X POST 'https://api.rollbar.com/api/1/deploy' -d '{"environment": "production", "status": "succeeded","revision": $comit_number, "user": "Toshiharu"}'
+http POST https://api.rollbar.com/api/1/deploy X-Rollbar-Access-Token:ffd0c1e6e6d44392be42d0e83821f8d4 environment=production revision=$(git rev-parse --short HEAD) rollbar_name=FirstProject local_username=Toshiharu
 
 echo "----------------"
 echo "Deploy complete!"
