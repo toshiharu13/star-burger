@@ -6,7 +6,7 @@ echo "Update from repo"
 git pull
 
 echo "Install requirements"
-./venv/bin/pip install -r requirements.txt
+./venv/bin/pip install -r  requirements.txt --no-input
 
 echo "Install node.js libs"
 npm ci --dev
@@ -18,8 +18,8 @@ echo "Collect Django static"
 ./venv/bin/python manage.py  collectstatic --noinput
 
 echo "Make migrations"
-./venv/bin/python manage.py makemigrations
-./venv/bin/python manage.py migrate
+./venv/bin/python manage.py makemigrations --noinput
+./venv/bin/python manage.py migrate --noinput
 
 echo "restart Systemd service"
 systemctl restart django-burger.service
