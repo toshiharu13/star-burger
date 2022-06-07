@@ -130,7 +130,7 @@ rollbar.init(ROLLBAR_KEY)
 
 ROLLBAR = {
     'access_token': ROLLBAR_KEY,
-    'environment': 'debug_on' if DEBUG else 'debug_off',
+    'environment': env.str('ROLLBAR_ENVIRONMENT', 'production'),
     'branch': 'master',
     'root': BASE_DIR,
     'ignorable_404_urls': (
