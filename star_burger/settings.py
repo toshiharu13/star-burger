@@ -125,7 +125,7 @@ STATICFILES_DIRS = [
 YANDEX_KEY = env.str('YANDEX_KEY')
 ROLLBAR_KEY = env.str('ROLLBAR_KEY')
 
-rollbar.init(ROLLBAR_KEY)
+
 
 
 ROLLBAR = {
@@ -138,3 +138,4 @@ ROLLBAR = {
         re.compile('/foobar'),
     ),
 }
+rollbar.init(**ROLLBAR)
