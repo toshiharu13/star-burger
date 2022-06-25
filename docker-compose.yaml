@@ -1,0 +1,30 @@
+version: "3"
+volumes:
+  nginx_conf:
+  media:
+  static:
+services:
+  web:
+    #image: toshiharu13/star_burger
+    build: .
+    restart: always
+    #depends_on:
+     # - db
+    env_file:
+      - ./.env
+    expose:
+      - 8000
+    volumes:
+      - media:/opt/star-burger/media
+      - static:/opt/star-burger/staticfiles
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - static:/var/html/static/
+      - media:/var/html/media/
+      - ./nginx/starburger:/etc/nginx/sites-enabled/starburger
+    ports:
+      - "80:80"
