@@ -13,7 +13,7 @@ services:
     env_file:
       - ./.env
     expose:
-      - 8000
+      - "8000"
     volumes:
       - media:/opt/star-burger/media
       - static:/opt/star-burger/staticfiles
@@ -25,6 +25,6 @@ services:
     volumes:
       - static:/var/html/static/
       - media:/var/html/media/
-      - ./nginx/starburger:/etc/nginx/sites-enabled/starburger
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
