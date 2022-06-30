@@ -85,7 +85,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': dj_database_url.parse(env.str('DB_URL', 'sqlite:///db.sqlite3')),
+    #'default': dj_database_url.parse(env.str('DB_URL', 'sqlite:///db.sqlite3')),
+    'default': {
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [

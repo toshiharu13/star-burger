@@ -3,19 +3,26 @@ volumes:
   nginx_conf:
   media:
   static:
+  postgres_data:
 services:
+  db:
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
   web:
     #image: toshiharu13/star_burger
     build: .
     restart: always
-    #depends_on:
-     # - db
+    depends_on:
+      - db
     env_file:
       - ./.env
     expose:
       - "8000"
-    #ports:
-     # - "5432:5432"
     volumes:
       - media:/opt/star-burger/media
       - static:/opt/star-burger/staticfiles
