@@ -17,10 +17,6 @@ echo "Rebuild JS-code"
 echo "Collect Django static"
 ./venv/bin/python manage.py  collectstatic --noinput
 
-echo "Make migrations"
-./venv/bin/python manage.py makemigrations --noinput
-./venv/bin/python manage.py migrate --noinput
-
 echo "Rebuild docker containers"
 docker-compose up --build -d
 
