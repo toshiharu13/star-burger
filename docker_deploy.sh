@@ -18,6 +18,7 @@ echo "Collect Django static"
 ./venv/bin/python manage.py  collectstatic --noinput
 
 echo "Rebuild docker containers"
+docker rm -vf $(docker ps -a -q)
 docker-compose up --build -d
 
 echo "Make migrations"
